@@ -1,5 +1,8 @@
 # OtakuDash
 
+I Made it With Diffrant ways u can uncomment the CSS File and use the tailwind (https://cdn.tailwindcss.com) or Keep the CSS if u like it it looks the same only few things as u can see in the pictures
+and u can use it without the javaScript part if u want to i made small code in html just uncomment them and delete the javaScript file or do whatever u want and yeah thats it ^^ . 
+
 <img width="1917" height="902" alt="image" src="https://github.com/user-attachments/assets/1cf38014-9743-47a9-976b-b214b908adb7" />
 
 **Live Demo:** [View Project Live](https://mostafaosman9439.github.io/Anime-Dashboard/)
