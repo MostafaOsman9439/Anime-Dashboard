@@ -7,8 +7,6 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <!-- <link rel="stylesheet" href="CSS/style.css" /> -->
     <link rel="stylesheet" href="CSS/normalize.css" />
     <link
@@ -219,7 +217,10 @@
           </button>
         </div>
 
-        <div id="anime-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8 px-6"></div>
+        <div
+          id="anime-grid"
+          class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8 px-6"
+        ></div>
 
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse">
@@ -357,6 +358,7 @@
                 class="w-full bg-[#0f111a] border border-gray-800 p-2.5 rounded-lg text-white outline-none focus:border-purple-500/50 transition"
               />
             </div>
+
             <div class="form-group">
               <label class="block text-xs font-medium text-gray-400 mb-1.5"
                 >Studio</label
@@ -368,6 +370,7 @@
                 class="w-full bg-[#0f111a] border border-gray-800 p-2.5 rounded-lg text-white outline-none focus:border-purple-500/50 transition"
               />
             </div>
+
             <div class="form-group">
               <label class="block text-xs font-medium text-gray-400 mb-1.5"
                 >Progress</label
@@ -379,6 +382,7 @@
                 class="w-full bg-[#0f111a] border border-gray-800 p-2.5 rounded-lg text-white outline-none focus:border-purple-500/50 transition"
               />
             </div>
+
             <div class="form-group">
               <label class="block text-xs font-medium text-gray-400 mb-1.5"
                 >Status</label
@@ -391,6 +395,47 @@
                 <option value="Active">Active</option>
                 <option value="On Hold">On Hold</option>
               </select>
+            </div>
+
+            <div class="form-group">
+              <label class="block text-xs font-medium text-gray-400 mb-1.5"
+                >Anime Type</label
+              >
+              <select
+                id="typeInput"
+                class="w-full h-[42px] bg-[#0f111a] border border-gray-800 px-3 rounded-lg text-white outline-none focus:border-purple-500/50 transition appearance-none"
+              >
+                <option value="TV">TV Series</option>
+                <option value="Movie">Movie</option>
+                <option value="OVA">OVA</option>
+                <option value="ONA">ONA</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="block text-xs font-medium text-gray-400 mb-1.5"
+                >Anime Score (Optional)</label
+              >
+              <input
+                type="number"
+                id="scoreInput"
+                min="0"
+                max="10"
+                step="0.1"
+                placeholder="e.g. 8.5"
+                class="w-full h-[42px] bg-[#0f111a] border border-gray-800 px-3 rounded-lg text-white outline-none focus:border-purple-500/50 transition [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              />
+            </div>
+            <div class="form-group md:col-span-2">
+              <label class="block text-xs font-medium text-gray-400 mb-1.5"
+                >Image URL (Optional)</label
+              >
+              <input
+                type="url"
+                id="imageUrlInput"
+                placeholder="e.g. https://example.com/poster.jpg"
+                class="w-full h-[42px] bg-[#0f111a] border border-gray-800 px-3 rounded-lg text-white outline-none focus:border-purple-500/50 transition"
+              />
             </div>
           </div>
 
