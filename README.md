@@ -18,9 +18,6 @@ The project is structured flexibly; you can easily switch between custom vanilla
 - **Defensive UI & Fallback Systems:** Built-in smart placeholder image handling to protect the UI grid layout from breaking if an entry lacks an image URL.
 - **Responsive Fluid Layout:** Fully optimized for mobile, tablet, and desktop viewports using utility-first Tailwind configuration.
 - **Sidebar Navigation:** Lightweight hamburger menu navigation built smoothly with vanilla JS without bulky external framework dependencies.
-
-<img width="1918" height="905" alt="image" src="https://github.com/user-attachments/assets/19112d0e-d288-4acc-9039-f6f19cf17247" />
-
 ---
 
 ## Tech Stack
@@ -36,7 +33,7 @@ The project is structured flexibly; you can easily switch between custom vanilla
 
 ## Preview
 
-<img width="1918" height="910" alt="image" src="https://github.com/user-attachments/assets/e137579c-aad5-4500-af7c-f5f852b968be" />
+<img width="1918" height="905" alt="image" src="https://github.com/user-attachments/assets/19112d0e-d288-4acc-9039-f6f19cf17247" />
 
 ---
 
