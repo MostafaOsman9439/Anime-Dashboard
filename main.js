@@ -1,4 +1,4 @@
-let animeList = [];
+let animeList = JSON.parse(localStorage.getItem("animeList")) || [];
 let editIndex = null;
 const saveBtn =
   document.querySelector(".btn-save") ||
@@ -6,6 +6,12 @@ const saveBtn =
 const addFormContainer = document.getElementById("addFormContainer");
 
 async function fetchTopAnime() {
+  if (animeList.length > 0) {
+    displayAnimeTable();
+    displayAnimeCards(animeList);
+    return;
+  }
+
   const url = "https://api.jikan.moe/v4/top/anime?limit=6";
 
   try {
@@ -22,9 +28,9 @@ async function fetchTopAnime() {
         anime.images?.jpg?.image_url ||
         "https://placehold.co/150x150/0f111a/a855f7?text=Anime",
     }));
-
     displayAnimeCards(animeList);
     displayAnimeTable();
+    saveToLocalStorage();
   } catch (error) {
     console.error("Error fetching anime:", error);
   }
@@ -132,6 +138,7 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("animeStudio").value = "";
       document.getElementById("animeProgress").value = "";
       document.getElementById("typeInput").value = "TV";
+      document.getElementById("animeStatus").value = "Active";
       document.getElementById("scoreInput").value = "";
       document.getElementById("imageUrlInput").value = "";
       addFormContainer.style.display = "block";
@@ -177,6 +184,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       displayAnimeTable();
       displayAnimeCards(animeList);
+      saveToLocalStorage();
       addFormContainer.style.display = "none";
     });
   }
@@ -194,6 +202,7 @@ function deleteAnime(index) {
   animeList.splice(index, 1);
   displayAnimeTable();
   displayAnimeCards(animeList);
+  saveToLocalStorage();
 }
 
 const menuBtn = document.getElementById("menuBtn");
@@ -204,4 +213,8 @@ if (menuBtn && sidebar) {
     sidebar.classList.toggle("hidden");
     sidebar.classList.toggle("flex");
   });
+}
+
+function saveToLocalStorage() {
+  localStorage.setItem("animeList", JSON.stringify(animeList));
 }
