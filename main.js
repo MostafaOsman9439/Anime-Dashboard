@@ -16,7 +16,17 @@ async function fetchTopAnime() {
 
   try {
     const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`HTTP Error ${response.status}: ${response.statusText}`);
+    }
+
     const data = await response.json();
+
+    if (!Array.isArray(data?.data)) {
+      throw new Error("Invalid API Payload Format");
+    }
+
     animeList = data.data.map((anime) => ({
       name: anime.title_english || anime.title,
       studio: anime.studios[0]?.name || "Unknown Studio",
@@ -33,6 +43,18 @@ async function fetchTopAnime() {
     saveToLocalStorage();
   } catch (error) {
     console.error("Error fetching anime:", error);
+    displayErrorUI();
+  }
+}
+
+function displayErrorUI() {
+  const gridContainer = document.getElementById("anime-grid");
+  if (gridContainer) {
+    gridContainer.innerHTML = `
+      <div class="col-span-full p-4 bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl text-center text-sm">
+        Unable To Load Top Anime From Server (Gateway Timeout). Add A Title Manually Or Try Refreshing.
+      </div>
+    `;
   }
 }
 
