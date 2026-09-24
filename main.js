@@ -1,3 +1,69 @@
+const fallbackAnime = [
+  {
+    name: "Re:ZERO -Starting Life in Another World- Season 4",
+    studio: "White Fox",
+    progress: "19 Eps",
+    status: "Active",
+    type: "TV",
+    score: "9.19",
+    imageUrl: "https://cdn.myanimelist.net/images/anime/1540/155824.jpg",
+  },
+  {
+    name: "Frieren: Beyond Journey's End",
+    studio: "Madhouse",
+    progress: "28 Eps",
+    status: "Finished",
+    type: "TV",
+    score: "9.26",
+    imageUrl: "https://cdn.myanimelist.net/images/anime/1015/138006.jpg",
+  },
+  {
+    name: "Fullmetal Alchemist: Brotherhood",
+    studio: "Bones",
+    progress: "64 Eps",
+    status: "Finished",
+    type: "TV",
+    score: "9.11",
+    imageUrl: "https://cdn.myanimelist.net/images/anime/1208/94745.jpg",
+  },
+  {
+    name: "Steel Ball Run: JoJo's Bizarre Adventure",
+    studio: "David Production",
+    progress: "Ongoing Eps",
+    status: "Active",
+    type: "ONA",
+    score: "9.1",
+    imageUrl: "https://cdn.myanimelist.net/images/anime/1065/158884.jpg",
+  },
+  {
+    name: "Steins;Gate",
+    studio: "White Fox",
+    progress: "24 Eps",
+    status: "Finished",
+    type: "TV",
+    score: "9.07",
+    imageUrl: "https://cdn.myanimelist.net/images/anime/1935/127974.jpg",
+  },
+  {
+    name: "Chainsaw Man The Movie: Reze Arc",
+    studio: "MAPPA",
+    progress: "1 Eps",
+    status: "Finished",
+    type: "MOVIE",
+    score: "9.06",
+    imageUrl: "https://cdn.myanimelist.net/images/anime/1763/150638.jpg",
+  },
+  {
+    name: "Attack on Titan",
+    studio: "Wit Studio / MAPPA",
+    progress: "89 Eps",
+    status: "Finished",
+    type: "TV",
+    score: "9.05",
+    imageUrl: "https://cdn.myanimelist.net/images/anime/10/47347.jpg",
+  },
+];
+
 let animeList = JSON.parse(localStorage.getItem("animeList")) || [];
 let editIndex = null;
 const saveBtn =
@@ -5,45 +71,59 @@ const saveBtn =
   document.getElementById("saveAnimeBtn");
 const addFormContainer = document.getElementById("addFormContainer");
 
-async function fetchTopAnime() {
+async function fetchTopAnime(retries = 3) {
   if (animeList.length > 0) {
     displayAnimeTable();
     displayAnimeCards(animeList);
     return;
   }
 
+  animeList = fallbackAnime.map((anime) => ({ ...anime }));
+  displayAnimeCards(animeList);
+  displayAnimeTable();
+
   const url = "https://api.jikan.moe/v4/top/anime?limit=6";
 
-  try {
-    const response = await fetch(url);
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      const response = await fetch(url);
 
-    if (!response.ok) {
-      throw new Error(`HTTP Error ${response.status}: ${response.statusText}`);
+      if (!response.ok) {
+        throw new Error(
+          `HTTP Error ${response.status}: ${response.statusText}`,
+        );
+      }
+
+      const data = await response.json();
+
+      if (!Array.isArray(data?.data)) {
+        throw new Error("Invalid API Payload Format");
+      }
+
+      animeList = data.data.map((anime) => ({
+        name: anime.title_english || anime.title,
+        studio: anime.studios?.[0]?.name || "Unknown Studio",
+        progress: `${anime.episodes || "Ongoing"} Eps`, // Or progress: (anime.episodes || "Ongoing") + "Eps", (Old)
+        status: anime.airing ? "Active" : "Finished",
+        type: anime.type || "TV",
+        score: anime.score ?? "N/A",
+        imageUrl:
+          anime.images?.jpg?.image_url ||
+          "https://placehold.co/150x150/0f111a/a855f7?text=Anime",
+      }));
+      displayAnimeCards(animeList);
+      displayAnimeTable();
+      saveToLocalStorage();
+      return;
+    } catch (error) {
+      if (attempt < retries) {
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+      } else {
+        animeList = fallbackAnime.map((anime) => ({ ...anime }));
+        displayAnimeCards(animeList);
+        displayAnimeTable();
+      }
     }
-
-    const data = await response.json();
-
-    if (!Array.isArray(data?.data)) {
-      throw new Error("Invalid API Payload Format");
-    }
-
-    animeList = data.data.map((anime) => ({
-      name: anime.title_english || anime.title,
-      studio: anime.studios[0]?.name || "Unknown Studio",
-      progress: `${anime.episodes || "Ongoing"} Eps`, // Or progress: (anime.episodes || "Ongoing") + "Eps", (Old)
-      status: anime.airing ? "Active" : "Finished",
-      type: anime.type || "TV",
-      score: anime.score ?? "N/A",
-      imageUrl:
-        anime.images?.jpg?.image_url ||
-        "https://placehold.co/150x150/0f111a/a855f7?text=Anime",
-    }));
-    displayAnimeCards(animeList);
-    displayAnimeTable();
-    saveToLocalStorage();
-  } catch (error) {
-    console.error("Error fetching anime:", error);
-    displayErrorUI();
   }
 }
 
@@ -65,14 +145,15 @@ function displayAnimeCards(animeList) {
   gridContainer.innerHTML = "";
 
   animeList.forEach((anime) => {
+    const isFeaturedAnime = /re:zero/i.test(anime.name);
     const cardHTML = `
-    <div class="bg-[#161925] border border-gray-800/60 p-5 rounded-2xl flex items-center justify-between hover:border-purple-500/30 transition-all duration-300">
+    <div class="bg-[#161925] border border-gray-800/60 ${isFeaturedAnime ? "col-span-full min-h-60 p-8" : "p-5"} rounded-2xl flex items-center justify-between hover:border-purple-500/30 transition-all duration-300">
         <div class="space-y-2">
-          <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">${anime.type} • ${anime.progress}</p>
-          <h3 class="text-base font-bold text-gray-100 line-clamp-1">${anime.name}</h3>
-          <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-purple-600/10 text-purple-400 border border-purple-500/10">${anime.score}</span>
+          <p class="${isFeaturedAnime ? "text-sm" : "text-xs"} font-semibold text-gray-400 uppercase tracking-wider">${anime.type} • ${anime.progress}</p>
+          <h3 class="${isFeaturedAnime ? "text-2xl" : "text-base"} font-bold text-gray-100 line-clamp-1">${anime.name}</h3>
+          <span class="inline-flex items-center px-2 py-0.5 rounded-md ${isFeaturedAnime ? "text-base" : "text-xs"} font-medium bg-purple-600/10 text-purple-400 border border-purple-500/10">${anime.score}</span>
         </div>
-        <div class="w-14 h-14 overflow-hidden rounded-xl border border-gray-800 flex-shrink-0">
+        <div class="${isFeaturedAnime ? "w-32 h-32 rounded-2xl" : "w-14 h-14 rounded-xl"} overflow-hidden border border-gray-800 flex-shrink-0">
           <img src="${anime.imageUrl}" alt="${anime.name}" class="w-full h-full object-cover">
         </div>
     </div>
